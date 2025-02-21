@@ -1,9 +1,10 @@
-import { json, useActionData, useNavigate } from "@remix-run/react";
+import { json, redirect, useActionData } from "@remix-run/react";
 import { GoBack } from "../components/auth-components/go-back";
 import LoginCard from "../components/auth-components/login-card";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import prisma from "../lib/prismaClient";
+import { createUserSession, getSession } from "../lib/session.server";
 
 type ActionData = { success: string } | { error: string };
 
@@ -22,12 +23,7 @@ export async function action({ request }: { request: Request }) {
         { status: 302 }
       );
 
-    return json(
-      {
-        success: "User logged in successfully.",
-      },
-      { status: 455 }
-    );
+    return await createUserSession(existingUser.username, "/home");
   } catch (error) {
     return json(
       {
@@ -38,17 +34,22 @@ export async function action({ request }: { request: Request }) {
   }
 }
 
+export async function loader({ request }: { request: Request }) {
+  const session = await getSession(request.headers.get("Cookie"));
+  const username = session.get("username");
+
+  if (username) return redirect("/home");
+  return null;
+}
+
 const Login = () => {
   const actionData = useActionData<ActionData>();
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (actionData && "error" in actionData) toast.error(actionData?.error);
-    if (actionData && "success" in actionData) {
+    if (actionData && "success" in actionData)
       toast.success(actionData?.success);
-      navigate("/home");
-    }
-  }, [actionData, navigate]);
+  }, [actionData]);
   return (
     <main className=" h-screen w-full">
       <GoBack />

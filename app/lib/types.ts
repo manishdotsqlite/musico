@@ -7,17 +7,6 @@ export type User = {
   playlists: Playlist[];
 };
 
-export type Playlist = {
-  id: number;
-  title: string;
-  description?: string | null;
-  userId: number;
-  user: User;
-  songs: Song[];
-  createdAt: Date;
-  updatedAt: Date;
-};
-
 export type Song = {
   id: number;
   songId: string;
@@ -75,4 +64,31 @@ export type Artist = {
   albums: Album[];
   createdAt: Date;
   updatedAt: Date;
+};
+
+export type PersonalPlaylist = {
+  id: number;
+  title: string;
+  description?: string | null;
+  userId: number;
+  user: User;
+  songs: number[];
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type Playlist = {
+  id: string;
+  name: string;
+  description: string | null;
+  year: number | null;
+  type: string;
+  playCount: number | null;
+  language: string;
+  explicitContent: boolean;
+  songCount: number | null;
+  url: string;
+  image: { quality: string; url: string }[];
+  songs: Song[] | null;
+  artists: Artist[] | null;
 };

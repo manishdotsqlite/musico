@@ -10,83 +10,24 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  username  String    @unique
-  profilePicture  String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  playlists Playlist[]
+  id                Int       @id @default(autoincrement())
+  username          String    @unique
+  profilePicture    String
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  favoriteAlbums    Int[]     // Array of album IDs
+  favoriteArtists   Int[]     // Array of artist IDs
+  favoriteSongs     Int[]     // Array of song IDs
+  personalPlaylists PersonalPlaylist[] // Array of personal playlists
 }
 
-
-model Playlist {
+model PersonalPlaylist {
   id          Int       @id @default(autoincrement())
   title       String
   description String?
   userId      Int
   user        User      @relation(fields: [userId], references: [id])
-  songs       Song[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-}
-
-model Song {
-  id              Int       @id @default(autoincrement())
-  songId          String    @unique
-  name            String
-  type            String
-  year            String? 
-  releaseDate     String?   
-  duration        Int?   
-  label           String?   
-  explicitContent Boolean
-  playCount       Int?      
-  language        String
-  hasLyrics       Boolean
-  lyricsId        String?   
-  url             String
-  copyright       String?  
-  albumId         Int?
-  album           Album?    @relation(fields: [albumId], references: [id])
-  artists         Artist[]  
-  images          Json      
-  downloadUrls    Json      
-  playlistId      Int?
-  playlist        Playlist? @relation(fields: [playlistId], references: [id])
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-}
-
-
-model Album {
-  id              Int       @id @default(autoincrement())
-  albumId         String    @unique 
-  name            String
-  description     String?
-  year            String?  
-  type            String
-  playCount       Int?      
-  language        String
-  explicitContent Boolean
-  url             String
-  images          Json      
-  artists         Artist[]  
-  songs           Song[]    
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-}
-
-// Artist Model
-model Artist {
-  id          Int       @id @default(autoincrement())
-  artistId    String    @unique 
-  name        String
-  role        String
-  type        String
-  images      Json      
-  url         String
-  songs       Song[]   
-  albums      Album[]  
+  songs       Int[]     
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }

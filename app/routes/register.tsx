@@ -1,10 +1,11 @@
-import { json, useActionData, useNavigate } from "@remix-run/react";
+import { json, redirect, useActionData, useNavigate } from "@remix-run/react";
 import { useEffect } from "react";
 import { GoBack } from "~/components/auth-components/go-back";
 import RegisterCard from "~/components/auth-components/registration-card";
 import { toast } from "sonner";
 import prisma from "~/lib/prismaClient";
 import { UploadToCloudinary } from "~/lib/upload-to-cloudinary.server";
+import { createUserSession, getSession } from "~/lib/session.server";
 
 type ActionData = { success: string } | { error: string };
 
@@ -41,14 +42,7 @@ export async function action({ request }: { request: Request }) {
       },
     });
 
-    console.log("USER: ", user);
-
-    return json(
-      {
-        success: "User registered successfully.",
-      },
-      { status: 455 }
-    );
+    return await createUserSession(user.username, "/home");
   } catch (error) {
     return json(
       {
@@ -57,6 +51,14 @@ export async function action({ request }: { request: Request }) {
       { status: 500 }
     );
   }
+}
+
+export async function loader({ request }: { request: Request }) {
+  const session = await getSession(request.headers.get("Cookie"));
+  const username = session.get("username");
+
+  if (username) return redirect("/home");
+  return null;
 }
 
 const Register = () => {

@@ -1,35 +1,46 @@
 import { createCookieSessionStorage, redirect } from "@remix-run/node";
 
-export const sessionStorage = createCookieSessionStorage({
-  cookie: {
-    name: "musico_session",
-    httpOnly: true,
-    path: "/",
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-  },
-});
+const sessionSecret = "musico-secret";
 
-export async function getSession(request: Request) {
-  const cookieHeader = request.headers.get("Cookie");
-  return sessionStorage.getSession(cookieHeader);
-}
+export const { getSession, commitSession, destroySession } =
+  createCookieSessionStorage({
+    cookie: {
+      name: "musico-session",
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      secrets: [sessionSecret],
+    },
+  });
 
-export async function createUserSession(username: string) {
-  const session = await sessionStorage.getSession();
+export async function createUserSession(username: string, redirectTo: string) {
+  const session = await getSession();
   session.set("username", username);
-  return redirect("/", {
+  return redirect(redirectTo, {
     headers: {
-      "Set-Cookie": await sessionStorage.commitSession(session),
+      "Set-Cookie": await commitSession(session),
     },
   });
 }
 
+export async function requireUserSession(request: Request) {
+  const session = await getSession(request.headers.get("Cookie"));
+  const username = session.get("username");
+
+  if (!username) {
+    return redirect("/login");
+  }
+
+  return username;
+}
+
 export async function logout(request: Request) {
-  const session = await getSession(request);
+  const session = await getSession(request.headers.get("Cookie"));
+  console.log(session.data);
   return redirect("/login", {
     headers: {
-      "Set-Cookie": await sessionStorage.destroySession(session),
+      "Set-Cookie": await destroySession(session),
     },
   });
 }
