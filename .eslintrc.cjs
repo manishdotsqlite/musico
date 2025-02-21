@@ -1,9 +1,3 @@
-/**
- * This is intended to be a basic starting point for linting in your app.
- * It relies on recommended configs out of the box for simplicity, but you can
- * and should modify this configuration to best suit your team's needs.
- */
-
 /** @type {import('eslint').Linter.Config} */
 module.exports = {
   root: true,
@@ -21,14 +15,14 @@ module.exports = {
   },
   ignorePatterns: ["!**/.server", "!**/.client"],
 
-  // Base config
+  // Base ESLint config
   extends: ["eslint:recommended"],
 
   overrides: [
-    // React
+    // React settings
     {
       files: ["**/*.{js,jsx,ts,tsx}"],
-      plugins: ["react", "jsx-a11y"],
+      plugins: ["react", "jsx-a11y", "import"],
       extends: [
         "plugin:react/recommended",
         "plugin:react/jsx-runtime",
@@ -45,35 +39,39 @@ module.exports = {
           { name: "NavLink", linkAttribute: "to" },
         ],
         "import/resolver": {
-          typescript: {},
+          node: {
+            paths: ["app"],
+            extensions: [".js", ".jsx", ".ts", ".tsx"],
+          },
+          typescript: {
+            alwaysTryTypes: true,
+            project: "./tsconfig.json",
+          },
         },
       },
     },
 
-    // Typescript
+    // TypeScript settings
     {
       files: ["**/*.{ts,tsx}"],
       plugins: ["@typescript-eslint", "import"],
       parser: "@typescript-eslint/parser",
-      settings: {
-        "import/internal-regex": "^~/",
-        "import/resolver": {
-          node: {
-            extensions: [".ts", ".tsx"],
-          },
-          typescript: {
-            alwaysTryTypes: true,
-          },
-        },
-      },
       extends: [
         "plugin:@typescript-eslint/recommended",
         "plugin:import/recommended",
         "plugin:import/typescript",
       ],
+      rules: {
+        "@typescript-eslint/no-unused-vars": [
+          "warn",
+          { argsIgnorePattern: "^_" },
+        ],
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "import/no-unresolved": "error", // Ensure import paths are valid
+      },
     },
 
-    // Node
+    // Node settings
     {
       files: [".eslintrc.cjs"],
       env: {
