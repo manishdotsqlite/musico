@@ -33,12 +33,6 @@ function NavigationDock() {
       className: currentPath === "/albums" ? "bg-gray-300" : "",
     },
     {
-      icon: Palette,
-      label: "Artists",
-      onClick: () => navigate("/artists"),
-      className: currentPath === "/artists" ? "bg-gray-300" : "",
-    },
-    {
       icon: ListMusic,
       label: "Playlists",
       onClick: () => navigate("/playlists"),
@@ -52,7 +46,7 @@ function NavigationDock() {
     },
   ];
 
-  return <Dock items={items} />;
+  return <Dock items={items} className="z-100" />;
 }
 
 export { NavigationDock };

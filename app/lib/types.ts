@@ -8,30 +8,68 @@ export type User = {
 };
 
 export type Song = {
-  id: number;
-  songId: string;
+  id: string;
   name: string;
   type: string;
-  year?: string | null;
-  releaseDate?: string | null;
-  duration?: number | null;
-  label?: string | null;
+  year: string;
+  releaseDate: string | null;
+  duration: number;
+  label: string;
   explicitContent: boolean;
-  playCount?: number | null;
+  playCount: number;
   language: string;
   hasLyrics: boolean;
-  lyricsId?: string | null;
+  lyricsId: string | null;
   url: string;
-  copyright?: string | null;
-  albumId?: number | null;
-  album?: Album | null;
-  artists: Artist[];
-  images: { quality: string; url: string }[];
-  downloadUrls: { quality: string; url: string }[];
-  playlistId?: number | null;
-  playlist?: Playlist | null;
-  createdAt: Date;
-  updatedAt: Date;
+  copyright: string;
+  album: {
+    id: string;
+    name: string;
+    url: string;
+  };
+  artists: {
+    primary: {
+      id: string;
+      name: string;
+      role: string;
+      image: {
+        quality: string;
+        url: string;
+      }[];
+      type: string;
+      url: string;
+    }[];
+    featured: {
+      id: string;
+      name: string;
+      role: string;
+      image: {
+        quality: string;
+        url: string;
+      }[];
+      type: string;
+      url: string;
+    }[];
+    all: {
+      id: string;
+      name: string;
+      role: string;
+      image: {
+        quality: string;
+        url: string;
+      }[];
+      type: string;
+      url: string;
+    }[];
+  };
+  image: {
+    quality: string;
+    url: string;
+  }[];
+  downloadUrl: {
+    quality: string;
+    url: string;
+  }[];
 };
 
 export type Album = {
@@ -80,15 +118,13 @@ export type PersonalPlaylist = {
 export type Playlist = {
   id: string;
   name: string;
-  description: string | null;
-  year: number | null;
-  type: string;
-  playCount: number | null;
+  type: "playlist";
+  image: {
+    quality: string;
+    url: string;
+  }[];
+  url: string;
+  songCount: number;
   language: string;
   explicitContent: boolean;
-  songCount: number | null;
-  url: string;
-  image: { quality: string; url: string }[];
-  songs: Song[] | null;
-  artists: Artist[] | null;
 };

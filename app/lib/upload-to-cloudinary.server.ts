@@ -2,7 +2,6 @@ import axios from "axios";
 
 export const UploadToCloudinary = async (file: File) => {
   const cloudName = process.env.CLOUDINARY_NAME;
-  console.log(cloudName);
   const uploadPreset = "musico";
 
   if (!cloudName || !uploadPreset) {
